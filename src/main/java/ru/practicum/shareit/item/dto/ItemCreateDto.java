@@ -1,14 +1,17 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.Builder;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-@Builder
 @Data
-public class ItemDto {
-    private Long id;
+public class ItemCreateDto {
+    @NotNull
+    @NotBlank
     private String name;
+    @NotNull
     private String description;
+    @NotNull
     private Boolean available;
     private Long owner;
 }
