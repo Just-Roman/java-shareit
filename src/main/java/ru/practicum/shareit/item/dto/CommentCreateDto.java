@@ -5,15 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
-public class ItemCreateDto {
+public class CommentCreateDto {
     @NotNull
     @NotBlank
-    private String name;
-    @NotNull
-    private String description;
-    @NotNull
-    private Boolean available;
-    private Long owner;
+    private String text;
 }

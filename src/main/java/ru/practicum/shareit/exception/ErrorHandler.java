@@ -33,6 +33,12 @@ public class ErrorHandler {
         return new ErrorResponse("Error", e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequestException(final BadRequestException e) {
+        return new ErrorResponse("Error", e.getMessage());
+    }
+
 }
 
 

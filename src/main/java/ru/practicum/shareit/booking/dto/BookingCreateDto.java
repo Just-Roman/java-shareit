@@ -1,21 +1,40 @@
 package ru.practicum.shareit.booking.dto;
 
-import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import ru.practicum.shareit.booking.Status;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
+@Component
 @Data
 public class BookingCreateDto {
-    private Long id;
-    @Null
+    @NotNull
+    @FutureOrPresent
     private LocalDateTime start;
-    @Null
+    @NotNull
+    @Future
     private LocalDateTime end;
-    @Null
+    @NotNull
     private Long itemId;
-    @Null
-    private Long booker;
-    private Status status;
+
+    @AssertTrue(message = "Дата окончания должна быть позже даты начала")
+    boolean isStartBeforeEnd() {
+        return start != null &&
+                end != null &&
+                start.isBefore(end);
+    }
+
+    public void normalizeTimestamps() {
+        if (start != null) {
+            start = start.truncatedTo(ChronoUnit.SECONDS);
+        }
+        if (end != null) {
+            end = end.truncatedTo(ChronoUnit.SECONDS);
+        }
+    }
 }
