@@ -21,9 +21,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
                 i.description,
                 i.available,
                 new ru.practicum.shareit.user.dto.UserDto(u.id, u.name, u.email),
-                (SELECT MAX(b.start) FROM Booking b 
+                (SELECT MAX(b.start) FROM Booking b
                  WHERE b.item.id = i.id AND b.status = 'APPROVED' AND b.end < CURRENT_TIMESTAMP),
-                (SELECT MIN(b.start) FROM Booking b 
+                (SELECT MIN(b.start) FROM Booking b
                  WHERE b.item.id = i.id AND b.status = 'APPROVED' AND b.start > CURRENT_TIMESTAMP)
             )
             FROM Item i
@@ -33,19 +33,19 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("""
             SELECT new ru.practicum.shareit.item.dto.ItemCommentDto(
-                i.id, 
-                i.name, 
-                i.description, 
-                i.available, 
-                new ru.practicum.shareit.user.dto.UserDto(u.id, u.name, u.email), 
-                (SELECT MAX(b.start) FROM Booking b  
-                 WHERE b.item.id = i.id AND b.status = 'APPROVED' AND b.end < CURRENT_TIMESTAMP), 
-                (SELECT MIN(b.start) FROM Booking b  
+                i.id,
+                i.name,
+                i.description,
+                i.available,
+                new ru.practicum.shareit.user.dto.UserDto(u.id, u.name, u.email),
+                (SELECT MAX(b.start) FROM Booking b
+                 WHERE b.item.id = i.id AND b.status = 'APPROVED' AND b.end < CURRENT_TIMESTAMP),
+                (SELECT MIN(b.start) FROM Booking b
                  WHERE b.item.id = i.id AND b.status = 'APPROVED' AND b.start > CURRENT_TIMESTAMP)
             )
-            FROM Item i 
-            JOIN User u ON i.owner.id = u.id 
-            WHERE i.owner.id = :ownerId 
+            FROM Item i
+            JOIN User u ON i.owner.id = u.id
+            WHERE i.owner.id = :ownerId
             ORDER BY i.id ASC""")
     List<ItemCommentDto> findAllByOwnerWithBookings(@Param("ownerId") Long ownerId);
 

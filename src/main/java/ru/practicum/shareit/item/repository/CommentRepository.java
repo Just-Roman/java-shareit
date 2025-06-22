@@ -16,10 +16,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                 c.id,
                 c.text,
                 new ru.practicum.shareit.item.dto.ItemDto(
-                    i.id, 
-                    i.name, 
-                    i.description, 
-                    i.available, 
+                    i.id,
+                    i.name,
+                    i.description,
+                    i.available,
                     new ru.practicum.shareit.user.dto.UserDto(
                         i.owner.id,
                         i.owner.name,
@@ -27,8 +27,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                     )
                 ),
                 new ru.practicum.shareit.user.dto.UserDto(
-                    u.id, 
-                    u.name, 
+                    u.id,
+                    u.name,
                     u.email
                 ),
                 c.created
@@ -45,10 +45,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                 c.id,
                 c.text,
                 new ru.practicum.shareit.item.dto.ItemDto(
-                    i.id, 
-                    i.name, 
-                    i.description, 
-                    i.available, 
+                    i.id,
+                    i.name,
+                    i.description,
+                    i.available,
                     new ru.practicum.shareit.user.dto.UserDto(
                         i.owner.id,
                         i.owner.name,
@@ -56,8 +56,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                     )
                 ),
                 new ru.practicum.shareit.user.dto.UserDto(
-                    u.id, 
-                    u.name, 
+                    u.id,
+                    u.name,
                     u.email
                 ),
                 c.created
