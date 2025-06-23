@@ -1,8 +1,9 @@
 package ru.practicum.shareit.booking.dto;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Null;
 import lombok.Data;
-import ru.practicum.shareit.booking.Status;
+import ru.practicum.shareit.booking.BookingStatus;
 
 import java.time.LocalDateTime;
 
@@ -14,5 +15,12 @@ public class BookingUpdateDto {
     private LocalDateTime end;
     private Long itemId;
     private Long booker;
-    private Status status;
+    private BookingStatus bookingStatus;
+
+    @AssertTrue(message = "Дата окончания должна быть позже даты начала")
+    boolean isStartBeforeEnd() {
+        return start != null &&
+                end != null &&
+                start.isBefore(end);
+    }
 }

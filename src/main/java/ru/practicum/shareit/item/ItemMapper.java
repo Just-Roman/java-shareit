@@ -1,33 +1,34 @@
 package ru.practicum.shareit.item;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Component
 public class ItemMapper {
 
-    public Item createDtoToModel(ItemCreateDto dto, long ownerId) {
+    public Item createDtoToModel(ItemCreateDto dto) {
         return Item.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .available(dto.getAvailable())
-                .owner(ownerId)
                 .build();
     }
 
-    public Item updateDtoToModel(ItemUpdateDto dto, long ownerId, long itemId) {
+    public Item updateDtoToModel(ItemUpdateDto dto, long itemId) {
         return Item.builder()
                 .id(itemId)
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .available(dto.getAvailable())
-                .owner(ownerId)
                 .build();
     }
 
@@ -37,7 +38,11 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .owner(item.getOwner())
+                .owner(UserDto.builder()
+                        .id(item.getOwner().getId())
+                        .name(item.getOwner().getName())
+                        .email(item.getOwner().getEmail())
+                        .build())
                 .build();
     }
 

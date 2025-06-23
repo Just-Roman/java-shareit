@@ -2,54 +2,132 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.CommentMapper;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
+    private final CommentRepository commentRepository;
 
     @Override
-    public Item create(Item item) {
-        checkUser(item);
-        return itemRepository.create(item);
+    public CommentDtoReturn createComment(long authorId, long itemId, CommentCreateDto createDto) {
+        if (!bookingRepository.hasUserBookedItem(authorId, itemId)) {
+            throw new BadRequestException("Добавлять комментарий может только тот, кто брал вещь в аренду");
+        }
+        User author = checkAndReturnUser(authorId);
+        Item item = checkAndReturnItem(itemId);
+        Comment comment = commentMapper.commentCreateDtoToModel(createDto);
+        comment.setAuthor(author);
+        comment.setItem(item);
+        comment = commentRepository.save(comment);
+        return commentMapper.modelToReturnDto(comment);
     }
 
     @Override
-    public Item update(Item item) {
-        checkUser(item);
-        return itemRepository.update(item);
+    public ItemCommentDto getByItemIdWithComment(long userId, long itemId) {
+        ItemCommentDto itemCommentDto = itemRepository.findItemWithBookings(itemId)
+                .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
+        if (itemCommentDto.getOwner().getId() != userId) {
+            itemCommentDto.setLastBooking(null);
+            itemCommentDto.setNextBooking(null);
+        }
+        List<CommentDto> commentDto = commentRepository.findByItemId(itemId);
+        itemCommentDto.setComments(commentDto);
+        return itemCommentDto;
     }
 
     @Override
-    public Item getItemById(long itemId) {
-        return itemRepository.getItemById(itemId);
+    public List<ItemCommentDto> findAllByOwnerIdWithBookings(Long ownerId) {
+        List<ItemCommentDto> items = itemRepository.findAllByOwnerWithBookings(ownerId);
+
+        if (items.isEmpty()) {
+            throw new NotFoundException("У пользователя с ID " + ownerId + " нет вещей");
+        }
+
+        List<Long> itemIds = items.stream()
+                .map(ItemCommentDto::getId)
+                .collect(Collectors.toList());
+
+        Map<Long, List<CommentDto>> commentsMap = commentRepository.findByItemIds(itemIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        comment -> comment.getItem().getId(),
+                        Collectors.toList()
+                ));
+
+        items.forEach(item ->
+                item.setComments(commentsMap.getOrDefault(item.getId(), Collections.emptyList()))
+        );
+        return items;
     }
 
     @Override
-    public List<Item> getItemByOwnerId(long ownerId) {
-        return itemRepository.getItemByOwnerId(ownerId);
+    public ItemDto createItem(ItemCreateDto createDto, long ownerId) {
+        Item item = itemMapper.createDtoToModel(createDto);
+        User user = checkAndReturnUser(ownerId);
+        item.setOwner(user);
+        return itemMapper.modelToItemDto(itemRepository.save(item));
     }
 
     @Override
-    public List<Item> getItemsByNameOrDescription(String text) {
+    public ItemDto update(ItemUpdateDto updateDto, long ownerId, long itemId) {
+        User owner = checkAndReturnUser(ownerId);
+        Item item = checkAndReturnItem(itemId);
+
+        if (item.getOwner().getId() != ownerId) {
+            throw new ConflictException("Редактировать Item может только владелец");
+        }
+        if (updateDto.getName() != null) {
+            item.setName(updateDto.getName());
+        }
+        if (updateDto.getDescription() != null) {
+            item.setDescription(updateDto.getDescription());
+        }
+        if (updateDto.getAvailable() != null) {
+            item.setAvailable(updateDto.getAvailable());
+        }
+        item.setOwner(owner);
+        itemRepository.save(item);
+        return itemMapper.modelToItemDto(item);
+    }
+
+    @Override
+    public List<ItemDto> getItemsByNameOrDescription(String text) {
         if (text == null || text.isEmpty()) {
             return List.of();
         }
-        return itemRepository.getItemsByNameOrDescription(text.toLowerCase());
+        List<Item> items = itemRepository.getItemsByNameOrDescription(text.toLowerCase());
+        return itemMapper.listModelToDto(items);
     }
 
-    private void checkUser(Item item) {
-        if (userRepository.getUserById(item.getOwner()) == null) {
-            System.out.println(item);
-            throw new NotFoundException("User отсутствует");
-        }
+    private Item checkAndReturnItem(long itemId) {
+        return itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item не найден"));
+    }
+
+    private User checkAndReturnUser(long id) {
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User не найден"));
     }
 
 }
