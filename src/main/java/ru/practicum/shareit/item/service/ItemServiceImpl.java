@@ -13,6 +13,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -30,6 +32,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
     private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     public CommentDtoReturn createComment(long authorId, long itemId, CommentCreateDto createDto) {
@@ -65,7 +68,6 @@ public class ItemServiceImpl implements ItemService {
         if (items.isEmpty()) {
             throw new NotFoundException("У пользователя с ID " + ownerId + " нет вещей");
         }
-
         List<Long> itemIds = items.stream()
                 .map(ItemCommentDto::getId)
                 .collect(Collectors.toList());
@@ -76,7 +78,6 @@ public class ItemServiceImpl implements ItemService {
                         comment -> comment.getItem().getId(),
                         Collectors.toList()
                 ));
-
         items.forEach(item ->
                 item.setComments(commentsMap.getOrDefault(item.getId(), Collections.emptyList()))
         );
@@ -88,6 +89,11 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemMapper.createDtoToModel(createDto);
         User user = checkAndReturnUser(ownerId);
         item.setOwner(user);
+        if (createDto.getRequestId() != null) {
+            ItemRequest itemRequest = itemRequestRepository.findById(createDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException("ItemRequest не найден"));
+            item.setRequest(itemRequest);
+        }
         return itemMapper.modelToItemDto(itemRepository.save(item));
     }
 

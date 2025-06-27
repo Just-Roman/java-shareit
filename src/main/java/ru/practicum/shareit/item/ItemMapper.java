@@ -6,6 +6,8 @@ import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class ItemMapper {
+    private final UserMapper userMapper;
 
     public Item createDtoToModel(ItemCreateDto dto) {
         return Item.builder()
@@ -38,18 +41,17 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .owner(UserDto.builder()
-                        .id(item.getOwner().getId())
-                        .name(item.getOwner().getName())
-                        .email(item.getOwner().getEmail())
-                        .build())
+                .owner(userMapper.modelToDto(item.getOwner()))
+                .request(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
     public List<ItemDto> listModelToDto(List<Item> items) {
         List<ItemDto> list = new ArrayList<>();
-        for (Item item : items) {
-            list.add(modelToItemDto(item));
+        if (items != null) {
+            for (Item item : items) {
+                list.add(modelToItemDto(item));
+            }
         }
         return list;
     }

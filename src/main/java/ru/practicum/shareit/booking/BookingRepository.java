@@ -15,7 +15,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                 WHERE item_id = :itemId
                 AND booker_id = :userId
                 AND status = 'APPROVED'
-                AND end_time < CURRENT_TIMESTAMP
+                AND end_time < CURRENT_TIMESTAMP + INTERVAL '1 seconds'
             )""",
             nativeQuery = true)
     boolean hasUserBookedItem(@Param("userId") Long userId, @Param("itemId") Long itemId);
