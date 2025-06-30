@@ -22,6 +22,6 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
             WHERE ir.requestor.id <> :requestorId
             ORDER BY ir.created DESC
             """)
-    List<ItemRequest> findAllByRequestorIdNotSorted(@Param("requestorId") Long requestorId);
+    List<ItemRequest> findAllByNotRequestorIdSorted(@Param("requestorId") Long requestorId);
 
 }

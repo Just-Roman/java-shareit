@@ -28,7 +28,7 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDto> getItemRequestsByNotUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemRequestService.getItemRequestsByNotUserId(userId);
+        return itemRequestService.findAllByNotRequestorIdSorted(userId);
     }
 
     @GetMapping("{requestId}")

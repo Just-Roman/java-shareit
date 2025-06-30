@@ -1,17 +1,21 @@
 package ru.practicum.shareit.user.service;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 
 import java.util.Collection;
 
 public interface UserService {
-    User create(User user);
+    UserDto create(UserCreateDto userDto);
 
-    User update(User user);
+    UserDto update(Long userId, UserUpdateDto userDto);
 
-    User getUserById(long id);
+    UserDto getUserById(long id);
 
-    Collection<User> getAll();
+    Collection<UserDto> getAll();
 
     void deleteUser(long userId);
 }

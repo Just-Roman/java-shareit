@@ -9,17 +9,19 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    @Query(value = """
+    // Проверка на возможность оставить отзыв на вещь после успешной брони (Добавлять отзыв может только тот, кто брал вещь в аренду)
+    @Query(value = """  
             SELECT EXISTS (
                 SELECT 1 FROM booking
                 WHERE item_id = :itemId
                 AND booker_id = :userId
                 AND status = 'APPROVED'
-                AND end_time < CURRENT_TIMESTAMP + INTERVAL '1 seconds'
+                AND end_time < CURRENT_TIMESTAMP + INTERVAL '1' SECOND
             )""",
             nativeQuery = true)
-    boolean hasUserBookedItem(@Param("userId") Long userId, @Param("itemId") Long itemId);
+    boolean hasUserBookedItem(@Param("userId") Long userId, @Param("itemId") Long itemId); // + INTERVAL '1 seconds'
 
+    // Проверка свободных дат для новой брони
     @Query("""
             SELECT COUNT(b) > 0
             FROM Booking b
@@ -35,6 +37,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                        @Param("start") LocalDateTime start,
                                        @Param("end") LocalDateTime end);
 
+    // Получение списка всех бронирований (с учетом их статуса) текущего пользователя
     @Query(value = """
             SELECT * FROM booking
             WHERE booker_id = :bookerId
@@ -51,19 +54,38 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> getBookingByBookerIdWhereTime(@Param("bookerId") Long bookerId, @Param("state") String state);
 
 
+    // Получение списка бронирований для всех вещей текущего пользователя.
     @Query(value = """
             SELECT b.* FROM booking b
             JOIN items i ON b.item_id = i.id
             WHERE i.owner_id = :ownerId
             AND (
                 (:state = 'ALL') OR
-                (:state = 'CURRENT' AND NOW() BETWEEN b.start_time AND b.end_time) OR
+                (:state = 'CURRENT' AND start_time <= NOW() AND end_time >= NOW()) OR
                 (:state = 'PAST' AND b.end_time < NOW()) OR
                 (:state = 'FUTURE' AND b.start_time > NOW()) OR
-                (:state = b.status)
+                (:state = 'WAITING' AND status = 'WAITING') OR
+                (:state = 'REJECTED' AND status = 'REJECTED')
             )
             ORDER BY b.start_time DESC""",
             nativeQuery = true)
     List<Booking> getBookingByOwnerIdWhereTime(@Param("ownerId") Long ownerId, @Param("state") String state);
+
+
+//
+//    @Query(value = """
+//            SELECT b.* FROM booking b
+//            JOIN items i ON b.item_id = i.id
+//            WHERE i.owner_id = :ownerId
+//            AND (
+//                (:state = 'ALL') OR
+//                (:state = 'CURRENT' AND NOW() BETWEEN b.start_time AND b.end_time) OR
+//                (:state = 'PAST' AND b.end_time < NOW()) OR
+//                (:state = 'FUTURE' AND b.start_time > NOW()) OR
+//                (:state = b.status)
+//            )
+//            ORDER BY b.start_time DESC""",
+//            nativeQuery = true)
+
 
 }

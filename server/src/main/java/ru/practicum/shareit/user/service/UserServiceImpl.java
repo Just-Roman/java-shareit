@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 
 import java.util.Collection;
 
@@ -12,34 +16,35 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public User create(User user) {
-        return userRepository.save(user);
+    public UserDto create(UserCreateDto userDto) {
+        User user = userMapper.createDtoToModel(userDto);
+        return userMapper.modelToDto(userRepository.save(user));
     }
 
     @Override
-    public User update(User newUser) {
-        User user = checkAndReturnUser(newUser.getId());
+    public UserDto update(Long userId, UserUpdateDto userDto) {
+        User user = checkAndReturnUser(userId);
 
-        if (newUser.getName() != null) {
-            user.setName(newUser.getName());
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
         }
-        if (newUser.getEmail() != null) {
-            user.setEmail(newUser.getEmail());
+        if (userDto.getEmail() != null) {
+            user.setEmail(userDto.getEmail());
         }
-
-        return userRepository.save(user);
+        return userMapper.modelToDto(userRepository.save(user));
     }
 
     @Override
-    public User getUserById(long id) {
-        return checkAndReturnUser(id);
+    public UserDto getUserById(long id) {
+        return userMapper.modelToDto(checkAndReturnUser(id));
     }
 
     @Override
-    public Collection<User> getAll() {
-        return userRepository.findAll();
+    public Collection<UserDto> getAll() {
+        return userMapper.listModelToDto(userRepository.findAll());
     }
 
     @Override

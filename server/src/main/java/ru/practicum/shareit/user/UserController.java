@@ -15,29 +15,26 @@ import java.util.Collection;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    private final UserMapper userMapper;
+
 
     @PostMapping
     public UserDto create(@RequestBody UserCreateDto userDto) {
-        User user = userMapper.createDtoToModel(userDto);
-        return userMapper.modelToDto(userService.create(user));
+        return userService.create(userDto);
     }
 
     @PatchMapping("/{userId}")
-    public UserDto update(@PathVariable Long userId,
-                          @RequestBody UserUpdateDto userDto) {
-        User user = userMapper.updateDtoToModel(userDto, userId);
-        return userMapper.modelToDto(userService.update(user));
+    public UserDto update(@PathVariable Long userId, @RequestBody UserUpdateDto userDto) {
+        return userService.update(userId, userDto);
     }
 
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable Long userId) {
-        return userMapper.modelToDto(userService.getUserById(userId));
+        return userService.getUserById(userId);
     }
 
     @GetMapping()
     public Collection<UserDto> getAll() {
-        return userMapper.listModelToDto(userService.getAll());
+        return userService.getAll();
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -40,9 +40,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getItemRequestsByNotUserId(long requestorId) {
+    public List<ItemRequestDto> findAllByNotRequestorIdSorted(long requestorId) {
         checkAndReturnUser(requestorId);
-        List<ItemRequest> requests = itemRequestRepository.findAllByRequestorIdNotSorted(requestorId);
+        List<ItemRequest> requests = itemRequestRepository.findAllByNotRequestorIdSorted(requestorId);
         if (requests.isEmpty()) {
             throw new NotFoundException("У пользователя с ID " + requestorId + " нет запросов");
         }

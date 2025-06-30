@@ -12,8 +12,6 @@ import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findByOwnerId(long ownerId);
-
     @Query("""
             SELECT new ru.practicum.shareit.item.dto.ItemCommentDto(
                 i.id,

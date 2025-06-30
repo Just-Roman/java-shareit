@@ -11,7 +11,7 @@ public interface ItemRequestService {
 
     List<ItemRequestDto> getItemRequestsByUserId(long requestorId);
 
-    List<ItemRequestDto> getItemRequestsByNotUserId(long requestorId);
+    List<ItemRequestDto> findAllByNotRequestorIdSorted(long requestorId);
 
     ItemRequestDto getItemRequestById(long itemRequestId);
 }
