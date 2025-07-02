@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -20,7 +19,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -78,7 +77,7 @@ class ItemRequestServiceTest {
         assertThat(list.size(), equalTo(4));
         assertThrows(NotFoundException.class, () ->
                 itemRequestService.findAllByNotRequestorIdSorted(999));
-        for (ItemRequestDto dto: list) {
+        for (ItemRequestDto dto : list) {
             assertThat(dto.getRequestor().getId(), not(equalTo(requestorId)));
             assertThat(dto.getItems().getFirst(), notNullValue());
         }

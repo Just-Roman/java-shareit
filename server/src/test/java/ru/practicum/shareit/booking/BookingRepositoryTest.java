@@ -29,13 +29,13 @@ class BookingRepositoryTest { // Данные для теста класса п�
 
     @Test
     void existsByItemIdAndTimeRange() {
-        BookingCreateDto dto1 =  BookingCreateDto.builder()
+        BookingCreateDto dto1 = BookingCreateDto.builder()
                 .itemId(3L)
                 .start(LocalDateTime.parse("2025-07-10T22:00:00"))
                 .end(LocalDateTime.parse("2025-07-10T22:00:00"))
                 .build();
 
-        BookingCreateDto dto2 =  BookingCreateDto.builder()
+        BookingCreateDto dto2 = BookingCreateDto.builder()
                 .itemId(4L)
                 .start(LocalDateTime.parse("2025-05-10T20:00:00"))
                 .end(LocalDateTime.parse("2025-05-11T20:00:00"))

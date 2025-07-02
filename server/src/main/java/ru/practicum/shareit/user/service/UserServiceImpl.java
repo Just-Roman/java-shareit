@@ -11,7 +11,6 @@ import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 
-import java.util.Collection;
 import java.util.List;
 
 @Transactional

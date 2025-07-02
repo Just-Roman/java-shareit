@@ -9,7 +9,6 @@ import org.springframework.test.context.jdbc.Sql;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.item.dto.*;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -42,7 +41,7 @@ class ItemServiceTest {
 
     @Test
     void createComment() {
-        CommentCreateDto createDto = new  CommentCreateDto();
+        CommentCreateDto createDto = new CommentCreateDto();
         createDto.setText("Супер!");
 
         CommentDtoReturn commentDtoReturn = itemService.createComment(2, 1, createDto);

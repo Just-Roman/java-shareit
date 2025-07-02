@@ -19,7 +19,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                 AND end_time < CURRENT_TIMESTAMP + INTERVAL '1' SECOND
             )""",
             nativeQuery = true)
-    boolean hasUserBookedItem(@Param("userId") Long userId, @Param("itemId") Long itemId); // + INTERVAL '1 seconds'
+    boolean hasUserBookedItem(@Param("userId") Long userId, @Param("itemId") Long itemId);
 
     // Проверка свободных дат для новой брони
     @Query("""
@@ -70,22 +70,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             ORDER BY b.start_time DESC""",
             nativeQuery = true)
     List<Booking> getBookingByOwnerIdWhereTime(@Param("ownerId") Long ownerId, @Param("state") String state);
-
-
-//
-//    @Query(value = """
-//            SELECT b.* FROM booking b
-//            JOIN items i ON b.item_id = i.id
-//            WHERE i.owner_id = :ownerId
-//            AND (
-//                (:state = 'ALL') OR
-//                (:state = 'CURRENT' AND NOW() BETWEEN b.start_time AND b.end_time) OR
-//                (:state = 'PAST' AND b.end_time < NOW()) OR
-//                (:state = 'FUTURE' AND b.start_time > NOW()) OR
-//                (:state = b.status)
-//            )
-//            ORDER BY b.start_time DESC""",
-//            nativeQuery = true)
 
 
 }

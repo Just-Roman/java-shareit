@@ -3,12 +3,9 @@ package ru.practicum.shareit.booking.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -28,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @Sql(scripts = "/data/data_repository.sql")
 class BookingServiceTest {
-    private static final Logger log = LoggerFactory.getLogger(BookingServiceTest.class);
+
     private final BookingService bookingService;
 
     BookingCreateDto createDto1 = BookingCreateDto.builder()
@@ -57,7 +54,7 @@ class BookingServiceTest {
 
     @Test
     void setBookingStatus() {
-         BookingDto bookingDto1 = bookingService.setBookingStatus(2, 2, true);
+        BookingDto bookingDto1 = bookingService.setBookingStatus(2, 2, true);
         BookingDto bookingDto2 = bookingService.setBookingStatus(3, 3, false);
 
         assertThat(bookingDto1.getStatus(), equalTo(BookingStatus.APPROVED));
@@ -70,7 +67,7 @@ class BookingServiceTest {
     void getBookingById() {
         long userId = 1L;
         BookingDto bookingDtoCreated = bookingService.setBookingItem(createDto1, userId);
-        BookingDto bookingDto = bookingService.getBookingById(userId,bookingDtoCreated.getId());
+        BookingDto bookingDto = bookingService.getBookingById(userId, bookingDtoCreated.getId());
 
         assertThat(bookingDto.getStart(), equalTo(createDto1.getStart()));
         assertThat(bookingDto.getEnd(), equalTo(createDto1.getEnd()));

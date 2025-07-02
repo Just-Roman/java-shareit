@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.service;
 
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,15 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 
-import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 class UserServiceTest {
     private final UserService service;
-    private final  JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     UserCreateDto createDto1 = UserCreateDto.builder()
             .name("Samson")
@@ -83,7 +78,7 @@ class UserServiceTest {
 
         assertThat(list.size(), equalTo(1));
 
-       assertThat(list.getFirst(), equalTo(dtoCreated));
+        assertThat(list.getFirst(), equalTo(dtoCreated));
     }
 
     @Test
@@ -91,6 +86,6 @@ class UserServiceTest {
         UserDto dtoCreated = service.create(createDto1);
         service.deleteUser(dtoCreated.getId());
 
-        assertThrows(NotFoundException.class,   () -> service.getUserById(dtoCreated.getId()));
+        assertThrows(NotFoundException.class, () -> service.getUserById(dtoCreated.getId()));
     }
 }
