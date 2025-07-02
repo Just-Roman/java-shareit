@@ -4,8 +4,7 @@ import lombok.*;
 
 
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class UserDto {
     private Long id;

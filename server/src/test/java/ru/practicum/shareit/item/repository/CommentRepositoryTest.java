@@ -13,11 +13,10 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Sql(scripts = "/data.sql")
+@Sql(scripts = {"/data/cleanup.sql", "/data/data.sql"})
 class CommentRepositoryTest { // Данные для теста класса подготовлены в файле data.sql
 
     @Autowired

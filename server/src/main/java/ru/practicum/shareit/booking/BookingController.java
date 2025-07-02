@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping(path = "/bookings")
 public class BookingController {
     private final BookingService bookingService;
-    private final BookingCreateDto createDto;
 
     @PostMapping
     public BookingDto setBookingItem(@RequestHeader("X-Sharer-User-Id") Long userId,

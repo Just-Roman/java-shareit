@@ -16,7 +16,6 @@ import java.util.Collection;
 public class UserController {
     private final UserService userService;
 
-
     @PostMapping
     public UserDto create(@RequestBody UserCreateDto userDto) {
         return userService.create(userDto);

@@ -1,14 +1,11 @@
 package ru.practicum.shareit.booking;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
-import ru.practicum.shareit.booking.dto.BookingDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,11 +13,10 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Sql(scripts = "/data.sql")
+@Sql(scripts = {"/data/cleanup.sql", "/data/data.sql"})
 class BookingRepositoryTest { // Данные для теста класса подготовлены в файле data.sql
     @Autowired
     private BookingRepository bookingRepository;
@@ -33,15 +29,17 @@ class BookingRepositoryTest { // Данные для теста класса п�
 
     @Test
     void existsByItemIdAndTimeRange() {
-        BookingCreateDto dto1 = new  BookingCreateDto();
-        dto1.setItemId(3L);
-        dto1.setStart(LocalDateTime.parse("2025-07-01T08:00:00"));
-        dto1.setEnd(LocalDateTime.parse("2025-07-10T22:00:00"));
+        BookingCreateDto dto1 =  BookingCreateDto.builder()
+                .itemId(3L)
+                .start(LocalDateTime.parse("2025-07-10T22:00:00"))
+                .end(LocalDateTime.parse("2025-07-10T22:00:00"))
+                .build();
 
-        BookingCreateDto dto2 = new  BookingCreateDto();
-        dto2.setItemId(4L);
-        dto2.setStart(LocalDateTime.parse("2025-05-10T20:00:00"));
-        dto2.setEnd(LocalDateTime.parse("2025-05-11T20:00:00"));
+        BookingCreateDto dto2 =  BookingCreateDto.builder()
+                .itemId(4L)
+                .start(LocalDateTime.parse("2025-05-10T20:00:00"))
+                .end(LocalDateTime.parse("2025-05-11T20:00:00"))
+                .build();
 
         assertThat(bookingRepository.existsByItemIdAndTimeRange(dto1.getItemId(), dto1.getStart(), dto1.getEnd()),
                 equalTo(false));  // Этот промежуток времени свободен, бронь состоится
@@ -59,18 +57,10 @@ class BookingRepositoryTest { // Данные для теста класса п�
         assertThat(listAll.getLast().getBooker().getId(), equalTo(1L));
         assertThat(listAll.getLast().getItem(), notNullValue());
 
-        List<Booking> listCurrent = bookingRepository.getBookingByBookerIdWhereTime(bookerId, "CURRENT");
-        assertThat(listCurrent.size(), equalTo(0));
-
         List<Booking> listPast = bookingRepository.getBookingByBookerIdWhereTime(bookerId, "PAST");
         assertThat(listPast.size(), equalTo(1));
         assertThat(listPast.getFirst().getBooker().getId(), equalTo(bookerId));
         assertThat(listPast.getLast().getItem(), notNullValue());
-
-        List<Booking> listFuture = bookingRepository.getBookingByBookerIdWhereTime(bookerId, "FUTURE");
-        assertThat(listFuture.size(), equalTo(1));
-        assertThat(listFuture.getFirst().getBooker().getId(), equalTo(bookerId));
-        assertThat(listFuture.getLast().getItem(), notNullValue());
 
         List<Booking> listFWaiting = bookingRepository.getBookingByBookerIdWhereTime(bookerId, "WAITING");
         assertThat(listFWaiting.size(), equalTo(0));

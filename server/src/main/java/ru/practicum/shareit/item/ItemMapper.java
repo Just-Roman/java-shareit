@@ -26,15 +26,6 @@ public class ItemMapper {
                 .build();
     }
 
-    public Item updateDtoToModel(ItemUpdateDto dto, long itemId) {
-        return Item.builder()
-                .id(itemId)
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .available(dto.getAvailable())
-                .build();
-    }
-
     public ItemDto modelToItemDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())

@@ -15,7 +15,7 @@ import static org.hamcrest.core.IsNot.not;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Sql(scripts = "/data.sql")
+@Sql(scripts = {"/data/cleanup.sql", "/data/data.sql"})
 class ItemRequestRepositoryTest { // Данные для теста класса подготовлены в файле data.sql
     @Autowired
     private ItemRequestRepository repository;

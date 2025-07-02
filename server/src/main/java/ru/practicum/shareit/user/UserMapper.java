@@ -19,14 +19,6 @@ public class UserMapper {
                 .build();
     }
 
-    public User updateDtoToModel(UserUpdateDto dto, Long userId) {
-        return User.builder()
-                .id(userId)
-                .name(dto.getName())
-                .email(dto.getEmail())
-                .build();
-    }
-
     public UserDto modelToDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
@@ -35,7 +27,7 @@ public class UserMapper {
                 .build();
     }
 
-    public Collection<UserDto> listModelToDto(Collection<User> users) {
+    public List<UserDto> listModelToDto(Collection<User> users) {
         List<UserDto> list = new ArrayList<>();
         for (User user : users) {
             list.add(modelToDto(user));

@@ -33,23 +33,4 @@ public class CommentMapper {
                 .created(comment.getCreated())
                 .build();
     }
-
-    public CommentDto modelToDto(Comment comment) {
-        UserDto userDto = userMapper.modelToDto(comment.getAuthor());
-        Item item = comment.getItem();
-        ItemDto itemDto = ItemDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .owner(userDto)
-                .build();
-
-        return CommentDto.builder()
-                .id(comment.getId())
-                .text(comment.getText())
-                .item(itemDto)
-                .author(userDto)
-                .build();
-    }
 }

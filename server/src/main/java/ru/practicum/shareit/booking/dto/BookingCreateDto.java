@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-
-@Component
+@Builder
 @Data
 public class BookingCreateDto {
     private LocalDateTime start;

@@ -7,6 +7,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface UserService {
     UserDto create(UserCreateDto userDto);
@@ -15,7 +16,7 @@ public interface UserService {
 
     UserDto getUserById(long id);
 
-    Collection<UserDto> getAll();
+    List<UserDto> getAll();
 
     void deleteUser(long userId);
 }
