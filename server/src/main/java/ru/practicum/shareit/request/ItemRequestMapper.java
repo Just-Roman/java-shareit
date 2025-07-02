@@ -24,7 +24,7 @@ public class ItemRequestMapper {
                 .build();
     }
 
-    public ItemRequestDto modelToItemRequestDto (ItemRequest itemRequest) {
+    public ItemRequestDto modelToItemRequestDto(ItemRequest itemRequest) {
         return ItemRequestDto.builder()
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
@@ -36,7 +36,7 @@ public class ItemRequestMapper {
 
     public List<ItemRequestDto> listModelToItemRequestDto(List<ItemRequest> requests) {
         List<ItemRequestDto> listDto = new ArrayList<>();
-        for (ItemRequest request: requests) {
+        for (ItemRequest request : requests) {
             listDto.add(modelToItemRequestDto(request));
         }
         return listDto;

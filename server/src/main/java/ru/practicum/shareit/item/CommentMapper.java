@@ -5,14 +5,12 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.CommentCreateDto;
 import ru.practicum.shareit.item.dto.CommentDtoReturn;
 import ru.practicum.shareit.item.model.Comment;
-import ru.practicum.shareit.user.UserMapper;
 
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Component
 public class CommentMapper {
-    private final UserMapper userMapper;
 
     public Comment commentCreateDtoToModel(CommentCreateDto createDto) {
         return Comment.builder()
