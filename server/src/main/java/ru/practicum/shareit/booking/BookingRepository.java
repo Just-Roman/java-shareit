@@ -10,7 +10,7 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     // Проверка на возможность оставить отзыв на вещь после успешной брони (Добавлять отзыв может только тот, кто брал вещь в аренду)
-    @Query(value = """  
+    @Query(value = """
             SELECT EXISTS (
                 SELECT 1 FROM booking
                 WHERE item_id = :itemId
